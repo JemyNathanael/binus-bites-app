@@ -3,6 +3,30 @@ dist/
 node_modules/
 build/
 
+# Expo
+.expo/
+web-build/
+expo-env.d.ts
+
+# local env files
+.env*.local
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Metro
+.metro-health-check*
+
 # Logs
 logs
 *.log
@@ -14,6 +38,14 @@ lerna-debug.log*
 
 # OS
 .DS_Store
+
+# macOS
+*.pem
+
+# typescript
+*.tsbuildinfo
+
+app-example
 
 # Tests
 /coverage
