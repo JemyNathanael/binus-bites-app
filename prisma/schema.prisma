@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  userId        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userName      String    @db.VarChar(50)
+  passwordHash  String    @db.VarChar(255)
+  email         String    @db.VarChar(50)
+  role          String    @db.VarChar(20)
+  createdAt     DateTime? @db.Timestamptz
+  Orders        Orders[]
+
+  @@map("Users")
+}
+
+model Vendors {
+  vendorId      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vendorName    String    @db.VarChar(50)
+  imageUrl      String?   @db.VarChar(255)
+  createdAt     DateTime? @db.Timestamptz
+  Menus         Menus[]
+  Orders        Orders[]
+
+  @@map("Vendors")
+}
+
+model Menus {
+  menuId        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vendorId      String    @db.Uuid
+  vendor        Vendors   @relation(fields: [vendorId], references: [vendorId], onDelete: Cascade)
+  menuName      String    @db.VarChar(50)
+  menuDesc      String?
+  price         Decimal   @db.Decimal(15, 2)
+  imageUrl      String?   @db.VarChar(255)
+  isAvailable   Boolean   @default(false)
+  createdAt     DateTime? @db.Timestamptz
+
+  @@map("Menus")
+}
+
+model Orders {
+  orderId       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String    @db.Uuid
+  user          Users     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  vendorId      String    @db.Uuid
+  vendor        Vendors   @relation(fields: [vendorId], references: [vendorId], onDelete: Cascade)
+  totalPrice    Decimal   @db.Decimal(15, 2)
+  status        String?   @db.VarChar(20)
+  createdAt     DateTime? @db.Timestamptz
+  updatedAt     DateTime? @db.Timestamptz
+
+  @@map("Orders")
+}
